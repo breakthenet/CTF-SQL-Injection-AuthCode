@@ -2,7 +2,6 @@ from django.http import HttpResponse
 import datetime
 import json
 from django.template.response import TemplateResponse
-import random
 import os
 from game.errors import ChallengeError
 from django.db import connections
@@ -19,14 +18,17 @@ def submit_attempt(request):
 
 def _submit_test(post_data):
     auth_code = post_data['auth_code']
+    difficulty = post_data['difficulty'] #['Easy', 'Medium', 'Hard']
 
     challenge_meta = {}
     challenge_meta['query'] = "SELECT name,last_login from game_authcode WHERE code='{auth_code}'"
     #challenge_meta['query'] = "SELECT name,last_login from game_authcodenum WHERE code={auth_code}"
 
-    #Filter out certain strings, more as difficulty increases
-    #possible_filters = ['"', "/", "\\", " ", "and", "or", "where", "limit", "null", "union", "select", "from", "having", "&", "=", "|", "-"]
     challenge_meta['filters'] = []
+    if difficulty == 'Medium':
+        challenge_meta['filters'] = ['"', '-', '\\', 'union', 'select', 'from', 'having', '&', '=', '|']
+    if difficulty == 'Hard':
+        challenge_meta['filters'] = ['"', "/", "\\", " ", "and", "or", "where", "limit", "null", "union", "select", "from", "having", "&", "=", "|", "-"]
 
     for filt in challenge_meta['filters']:
         auth_code = auth_code.replace(filt, '')
@@ -53,7 +55,7 @@ def _submit_test(post_data):
             for r in results:
                 if r.get('name') and r.get('last_login'):
                     print "SUCCESS with query", query, challenge_meta['filters']
-                    ctf_flag = os.environ.get('CTF_FLAG')
+                    ctf_flag = os.environ.get('CTF_FLAG_'+difficulty)
                     match_found = True
                     name = r.get('name')
                     last_login = r.get('last_login')

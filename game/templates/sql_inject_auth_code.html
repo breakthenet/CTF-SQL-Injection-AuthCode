@@ -21,6 +21,17 @@
         padding-bottom: 20px;
       }
     </style>
+    <script>
+      function getParameterByName(name) {
+          var url = window.location.href;
+          name = name.replace(/[\[\]]/g, "\\$&");
+          var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+              results = regex.exec(url);
+          if (!results) return null;
+          if (!results[2]) return '';
+          return decodeURIComponent(results[2].replace(/\+/g, " "));
+      }
+    </script>
 
   </head>
 
@@ -28,7 +39,7 @@
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
-        <div class="navbar-header">
+        <div class="navbar-header" style="width:100%">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
@@ -36,6 +47,11 @@
             <span class="icon-bar"></span>
           </button>
           <a class="navbar-brand" href="#">Super Secret Server</a>
+          <span style="float:right;margin-top:15px;"><select onchange="window.location.href=location.protocol + '//' + location.host + location.pathname+'?difficulty='+this.value" id='diff_select'>
+            <option>Easy</option>
+            <option>Medium</option>
+            <option>Hard</option>
+          </select></span>
         </div>
       </div>
     </nav>
@@ -72,12 +88,14 @@
     <script>window.jQuery || document.write('<script src="/static/js/jquery.min.js"><\/script>')</script>
     <script src="/static/js/bootstrap.min.js"></script>
     <script>
+        $('#diff_select').val(getParameterByName('difficulty'));
         function submit_attempt() {
             $.ajax({
                 type: 'POST',
                 url: '/submit_attempt',
                 data: {
-                   "auth_code": $('#auth_code').val()
+                   "auth_code": $('#auth_code').val(),
+                   "difficulty": $('#diff_select').val(),
                 },
                 dataType: 'json',
                 success: function (data) {

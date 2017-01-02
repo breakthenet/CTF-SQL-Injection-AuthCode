@@ -1,7 +1,9 @@
 {
   "env": {
     "IS_HEROKU_SERVER": "1",
-    "CTF_FLAG": "PUT-FLAG-HERE"
+    "CTF_FLAG_EASY": "PUT-FLAG-HERE",
+    "CTF_FLAG_MEDIUM": "PUT-FLAG-HERE",
+    "CTF_FLAG_HARD": "PUT-FLAG-HERE"
   },
   "addons": [
     "papertrail",
