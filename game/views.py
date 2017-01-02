@@ -21,14 +21,14 @@ def _submit_test(post_data):
     difficulty = post_data['difficulty'] #['Easy', 'Medium', 'Hard']
 
     challenge_meta = {}
-    challenge_meta['query'] = "SELECT name,last_login from game_authcode WHERE code='{auth_code}'"
-    #challenge_meta['query'] = "SELECT name,last_login from game_authcodenum WHERE code={auth_code}"
+    #challenge_meta['query'] = "SELECT name,last_login from game_authcode WHERE code='{auth_code}'"
+    challenge_meta['query'] = "SELECT name,last_login from game_authcodenum WHERE code={auth_code}"
 
     challenge_meta['filters'] = [';']
     if difficulty == 'Medium':
         challenge_meta['filters'] = [';', '"', '-', '\\', 'union', 'select', 'from', 'having', '&', '=', '|']
     if difficulty == 'Hard':
-        challenge_meta['filters'] = [';', '"', "\\", " ", "and", "where", "limit", "null", "union", "select", "from", "having", "&", "=", "|", "-"] #Consider also adding "/", "or"
+        challenge_meta['filters'] = [';', "'", '"', "\\", " ", "and", "where", "limit", "null", "union", "select", "from", "having", "&", "=", "|", "-"] #Consider also adding "/", "or"
 
     for filt in challenge_meta['filters']:
         auth_code = auth_code.replace(filt, '')
