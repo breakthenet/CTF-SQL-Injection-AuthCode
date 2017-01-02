@@ -88,7 +88,11 @@
     <script>window.jQuery || document.write('<script src="/static/js/jquery.min.js"><\/script>')</script>
     <script src="/static/js/bootstrap.min.js"></script>
     <script>
-        $('#diff_select').val(getParameterByName('difficulty'));
+        var current_difficulty = getParameterByName('difficulty');
+        if (!current_difficulty) {
+            current_difficulty = 'Easy';
+        }
+        $('#diff_select').val(current_difficulty);
         function submit_attempt() {
             $.ajax({
                 type: 'POST',
