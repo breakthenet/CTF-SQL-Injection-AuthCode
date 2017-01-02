@@ -55,7 +55,7 @@ def _submit_test(post_data):
             for r in results:
                 if r.get('name') and r.get('last_login'):
                     print "SUCCESS with query", query, challenge_meta['filters']
-                    ctf_flag = os.environ.get('CTF_FLAG_'+difficulty)
+                    ctf_flag = os.environ.get('CTF_FLAG_'+difficulty.upper())
                     match_found = True
                     name = r.get('name')
                     last_login = r.get('last_login')
