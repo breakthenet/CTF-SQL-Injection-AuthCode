@@ -9,6 +9,6 @@
   ],
   "success_url": "/",
   "scripts": {
-    "postdeploy": "python manage.py migrate"
+    "postdeploy": "python load_db.py"
   }
 }

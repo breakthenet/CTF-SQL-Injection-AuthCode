@@ -7,8 +7,10 @@ import names
 from django.db import connections
 import random
 
-os.system("dropdb sqlinjauthcode")
-os.system("createdb sqlinjauthcode")
+if os.environ.get('IS_HEROKU_SERVER', False):
+    os.system("dropdb sqlinjauthcode")
+    os.system("createdb sqlinjauthcode")
+    
 os.system("python manage.py migrate")
 
 insert_data = """
