@@ -7,13 +7,6 @@ import os
 from game.errors import ChallengeError
 from django.db import connections
 
-def json_custom_parser(obj):
-    if isinstance(obj, datetime.datetime) or isinstance(obj, datetime.date):
-        dot_ix = 19
-        return obj.isoformat()[:dot_ix]
-    else:
-        raise TypeError(obj)
-
 def start_hack(request):
     return TemplateResponse(request, 'sql_inject_auth_code.html', context={})
 
@@ -31,20 +24,9 @@ def _submit_test(post_data):
     challenge_meta['query'] = "SELECT name,last_login from game_authcode WHERE code='{auth_code}'"
     #challenge_meta['query'] = "SELECT name,last_login from game_authcodenum WHERE code={auth_code}"
 
-    #20 total potential filters, some duplicated
-    possible_filters = ['"', "/", "\\", " ", "and", "or", "where", "limit", "null", "union", "select", "from", "having", "&", "=", "|", "union", "select", " "]
-    if "game_authcodenum" in challenge_meta['query']:
-        possible_filters.append("'")
-    else: #game_authcode
-        #escaping single quotes for game_authcode removes sql injection
-        possible_filters.append('"')
-
-    random.shuffle(possible_filters)
-
     #Filter out certain strings, more as difficulty increases
+    #possible_filters = ['"', "/", "\\", " ", "and", "or", "where", "limit", "null", "union", "select", "from", "having", "&", "=", "|", "-"]
     challenge_meta['filters'] = []
-    for i in range(0):
-        challenge_meta['filters'].append(possible_filters[i])
 
     for filt in challenge_meta['filters']:
         auth_code = auth_code.replace(filt, '')
@@ -91,3 +73,11 @@ def _submit_test(post_data):
         "name": name,
         "last_login": last_login
     }
+
+
+def json_custom_parser(obj):
+    if isinstance(obj, datetime.datetime) or isinstance(obj, datetime.date):
+        dot_ix = 19
+        return obj.isoformat()[:dot_ix]
+    else:
+        raise TypeError(obj)
