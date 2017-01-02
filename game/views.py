@@ -18,7 +18,7 @@ def submit_attempt(request):
 
 def _submit_test(post_data):
     auth_code = post_data['auth_code']
-    difficulty = post_data['difficulty'] #['Easy', 'Medium', 'Hard']
+    difficulty = post_data['difficulty'] #['Easy', 'Medium', 'Hard', 'Blind']
 
     challenge_meta = {}
     #challenge_meta['query'] = "SELECT name,last_login from game_authcode WHERE code='{auth_code}'"
@@ -62,6 +62,8 @@ def _submit_test(post_data):
 
     except Exception as e:
         print "submit_attempt error", str(e)
+        if difficulty == 'Blind':
+            query = "Blind Challenge... no query here for you."
 
         raise ChallengeError(query, etype="Invalid Syntax")
 
